@@ -1,0 +1,14 @@
+﻿Original_Variable_Name,New_Variable_Name,Units,Notes
+ID,ID,N/A,Row identification number
+Future_Mid-point,mid_point_year,N/A,"Mid year of projected period, will be used for some calculations"
+Time slice,time_slice,N/A,"NF = ""Near Future""(2020-2039), MC=""Mid-Century""(2040-2069), EC = ""End of Century""(2070-2100)"
+Climate scenario,climate_scenario,N/A,"Filtered for ""RCP4.5"""
+Scale,scale,N/A,"""Global"", ""Regional"", ""Regional(Site-based)"""
+Crop,crop,N/A,"Filtered for ""Maize"""
+Country,country,N/A,Country name
+Site(location),sublocation,N/A,Local site
+Region,continent,N/A,"Filtered for ""North America"""
+Soil organic matter management,soil_organic_matter,"""Yes"" or ""No""",Indicates comparison between soil management/no soil management practices
+Tillage,tillage,"""Yes"" or ""No""",Indicates comparison between tillage and no-till
+Cultivar,cultivar,"""Yes"" or ""No""",Indicates comparison between adaptation through different cultivars/no adaptation
+Adaptation potential_(%),adaptation_potential,%,Difference in relative yield change between with and without adaptation

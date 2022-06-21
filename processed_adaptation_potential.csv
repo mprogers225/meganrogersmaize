@@ -1,0 +1,29 @@
+"ID","crop","country","sublocation","continent","mid_point_year","time_slice","climate_scenario","scale","adaptation_type","soil_organic_matter","tillage","cultivar","adaptation_potential_actual","adaptation_potential_percentage"
+14,"Maize","United States","Michigan","North America",2070,"EC","RCP4.5","Regional","Planting date","No","No","No",0.58,9.95
+15,"Maize","United States","Michigan","North America",2070,"EC","RCP4.5","Regional","Combined","No","No","Yes",3.4,58.3
+16,"Maize","United States","Michigan","North America",2070,"EC","RCP4.5","Regional","Tillage","No","Yes","No",0.27,4.69
+17,"Maize","United States","Michigan","North America",2070,"EC","RCP4.5","Regional","Combined","No","Yes","No",0.57,9.81
+18,"Maize","United States","Michigan","North America",2070,"EC","RCP4.5","Regional","Combined","No","Yes","Yes",3.04,52.12
+26,"Maize","United States","Michigan","North America",2070,"EC","RCP4.5","Regional","Planting date","No","No","No",-0.34,-5.9
+27,"Maize","United States","Michigan","North America",2070,"EC","RCP4.5","Regional","Combined","No","No","Yes",3.7,63.45
+28,"Maize","United States","Michigan","North America",2070,"EC","RCP4.5","Regional","Tillage","No","Yes","No",0.09,1.6
+29,"Maize","United States","Michigan","North America",2070,"EC","RCP4.5","Regional","Combined","No","Yes","No",0.25,4.26
+30,"Maize","United States","Michigan","North America",2070,"EC","RCP4.5","Regional","Combined","No","Yes","Yes",3.51,60.14
+38,"Maize","United States","Michigan","North America",2070,"EC","RCP4.5","Regional","Planting date","No","No","No",0.68,11.59
+39,"Maize","United States","Michigan","North America",2070,"EC","RCP4.5","Regional","Combined","No","No","Yes",4.14,70.97
+40,"Maize","United States","Michigan","North America",2070,"EC","RCP4.5","Regional","Tillage","No","Yes","No",0.44,7.5
+41,"Maize","United States","Michigan","North America",2070,"EC","RCP4.5","Regional","Combined","No","Yes","No",0.67,11.42
+42,"Maize","United States","Michigan","North America",2070,"EC","RCP4.5","Regional","Combined","No","Yes","Yes",3.94,67.57
+140,"Maize","Canada","Ontario","North America",2055,"MC","RCP4.5","Regional","Cultivar","No","No","Yes",2.82,25.68
+141,"Maize","Canada","Ontario","North America",2085,"EC","RCP4.5","Regional","Cultivar","No","No","Yes",2.48,25.27
+299,"Maize","United States","Kansas","North America",2054,"MC","RCP4.5","Regional","Combined","No","No","Yes",2.3,22.77
+301,"Maize","United States","Kansas","North America",2054,"MC","RCP4.5","Regional","Cultivar","No","No","Yes",0.4,3.96
+305,"Maize","United States","Kansas","North America",2054,"MC","RCP4.5","Regional","Irrigation","No","No","No",1.8,17.82
+307,"Maize","United States","Kansas","North America",2054,"MC","RCP4.5","Regional","Cultivar","No","No","Yes",0.6,5.94
+309,"Maize","United States","Kansas","North America",2054,"MC","RCP4.5","Regional","Combined","No","No","Yes",1.5,14.85
+479,"Maize","Canada",NA,"North America",2030,"NF","RCP4.5","Global","Combined","No","No","Yes",0.28,2.86
+575,"Maize","United States",NA,"North America",2030,"NF","RCP4.5","Global","Combined","No","No","Yes",0.24,1.86
+707,"Maize","Canada",NA,"North America",2050,"MC","RCP4.5","Global","Combined","No","No","Yes",0.54,6.08
+803,"Maize","United States",NA,"North America",2050,"MC","RCP4.5","Global","Combined","No","No","Yes",0.4,3.42
+935,"Maize","Canada",NA,"North America",2080,"EC","RCP4.5","Global","Combined","No","No","Yes",0.64,7.02
+1031,"Maize","United States",NA,"North America",2080,"EC","RCP4.5","Global","Combined","No","No","Yes",0.5,4.14

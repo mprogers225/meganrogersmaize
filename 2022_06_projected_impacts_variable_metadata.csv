@@ -1,0 +1,18 @@
+﻿Original_Variable_Name,New_Variable_Name,Units,Notes
+ID,ID,N/A,Row identification number
+Crop,crop,N/A,"Filtered for ""Maize"""
+Country,country,N/A,Country name
+Site(Location),sublocation,N/A,Local site 
+Region,continent,N/A,"Filtered for ""North America"""
+Current Average Temperature_point_coordinate (dC),current_avg_temp,˚C,Considered to be the baseline 2005 temperature
+Current Annual Precipitation (mm) _point_coordinate,current_annuam_precipitation,mm,Considered to be the baseline 2005 precipitation levels
+Future Mid-point,mid_point_year,N/A,"mid year of projected period, will be used for some calculations"
+Time slice,time_slice,N/A,"NF = ""Near Future""(2020-2039), MC=""Mid-Century""(2040-2069), EC = ""End of Century""(2070-2100)"
+Climate Scenario,climate_scenario,N/A,"filtered for ""RCP4.5"""
+Local delta T from 2005,local_temp_change_since_2005,˚C,Local temperature rise from the common baseline year (2005) to Future-Mid point year
+Annual Precipitation change from 2005 (mm) Y,local_precipitation_change_since_2005,mm,Annual precipitation change calculated from 2005 to Future-Mid-point year
+Global delta T from 2005,global_temp_chance_since_2005,˚C,Global temperature rise from 2005  to Future-Mid point year  
+Projected yield(t/ha),projected_yield,t/ha,Projected yield from each study
+Climate impacts relative to 2005,climate_yield_change_from_2005,%,Relative yield change by climate change  relative to 2005 
+Climate impacts per ˚C,yield_change_per_C,% ℃-1,Relative yield change per degree 
+Climate impacts per decade ,yield_change_per_deacde,% 10 yr-1,Relative yield change per decade 
