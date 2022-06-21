@@ -1,0 +1,148 @@
+---
+title: "Adaptation Impact"
+author: "Megan Patricia Rogers"
+date: "6/15/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Description
+This Markdown file documents the construction of data that characterizes adaptation
+potential of cultivar choice and soil organic matter management. It should be noted
+that due to a lack of solid data, evaluating the significance of these findings is not possible at this point. This part of the paper's data analysis is more explicitly speculative and was included to draw attention to the need to further explore and predict the impacts of adaptive agricultural practices such as better soil management and bio-engineering. 
+
+#### Package loading:
+``` {r, warning=FALSE, message=FALSE}
+library(tidyverse) # suite of packages for data manipulation/visualization
+library(Hmisc) # more data analysis
+library(dplyr)  # data fame manipulation
+library(plotrix)  # makes calculating standard error easier
+library(skimr) # for creating summaries
+library(magrittr) # enable piping
+```
+
+#### Load data:
+```{r}
+processed_adaptation_potential <- read.csv("processed_adaptation_potential.csv", 
+                                           header = TRUE, sep = ",", dec = ".")
+```
+
+#### Creating New Dataframe 
+##### Calculating USA Statistics
+```{r}
+
+# Create new data frame with averages that you can compare
+
+# USA
+usa_adaptation_potential <- processed_adaptation_potential %>%
+  filter(country == "United States") # use USA data frame to calculate mean adaptation potential 
+
+# Tillage
+usa_tillage <- usa_adaptation_potential %>% 
+  filter(adaptation_type == "Tillage")
+
+usa_till_potential_percentage =
+  mean(usa_tillage$adaptation_potential_percentage)
+
+usa_till_potential_se =
+  std.error(usa_tillage$adaptation_potential_percentage)
+
+# Cultivar
+usa_cultivar <- usa_adaptation_potential %>% 
+  filter(adaptation_type == "Cultivar")
+
+usa_cultivar_potential_percentage =
+  mean(usa_cultivar$adaptation_potential_percentage)
+
+usa_cultivar_percentage_se =
+  std.error(usa_cultivar$adaptation_potential_percentage)
+```
+
+
+##### Calculating Canada Statistics
+``` {r}
+# Canada
+canada_adaptation_potential <- processed_adaptation_potential %>%
+  filter(country == "Canada")
+
+# Tillage
+canada_tillage <- canada_adaptation_potential %>% 
+  filter(adaptation_type == "Tillage")
+
+canada_till_potential_percentage =
+  mean(canada_tillage$adaptation_potential_percentage)
+
+canada_till_potential_se =
+  std.error(canada_tillage$adaptation_potential_percentage)
+
+# Cultivar
+canada_cultivar <- canada_adaptation_potential %>% 
+  filter(adaptation_type == "Cultivar")
+
+canada_cultivar_potential_percentage =
+  mean(canada_cultivar$adaptation_potential_percentage)
+
+canada_cultivar_potential_se =
+  std.error(canada_cultivar$adaptation_potential_percentage)
+
+```
+
+#### Combining USA and Canada Averages 
+``` {r}
+adaptation_potential_by_country = 
+  data.frame(country = c("United States", "Canada"),
+             tillage_percent_potential = c(usa_till_potential_percentage, canada_till_potential_percentage),
+             tillage_percent_se = c(usa_till_potential_se, canada_till_potential_se),
+             cultivar_percent_potential = c(usa_cultivar_potential_percentage, canada_cultivar_potential_percentage),
+             cultivar_percent_se = c(usa_cultivar_percentage_se, canada_cultivar_potential_se))
+             
+
+```
+
+#### Bar Plot of Tillage Potential
+```{r, warning=FALSE}
+
+ggplot(adaptation_potential_by_country, aes(x=country, y=tillage_percent_potential, 
+                          color=country)) +
+  geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = tillage_percent_potential - tillage_percent_se,
+                    ymax = tillage_percent_potential + tillage_percent_se), width = .6) +
+  labs(title="Projected Yield Increase due to Tillage Practices Per Country", 
+       x="Country", 
+       y="Yield Increase (%)")
+
+```
+#### Bar Plot of Cultivar Potential
+```{r}
+ggplot(adaptation_potential_by_country, aes(x=country, y=cultivar_percent_potential, 
+                          color=country)) +
+  geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = cultivar_percent_potential - cultivar_percent_se,
+                    ymax = cultivar_percent_potential + cultivar_percent_se), width = .6) +
+  labs(title="Projected Yield Increase due to Cultivar Improvements Per Country", 
+       x="Country", 
+       y="Yield Increase (%)")
+```
+
+#### Exploring Statistical Significance
+``` {r}
+
+# tillage:
+hist(canada_cultivar$adaptation_potential_percentage,
+     main = "Histogram of estimated cultivar improvements Canada",
+     xlab = "Estimated percent yield change")
+
+hist(usa_cultivar$adaptation_potential_percentage,
+     main = "Histogram of estimated cultivar improvements USA",
+     xlab = "Estimated percent yield change")
+
+# cultivar:
+hist(usa_tillage$adaptation_potential_percentage,
+     main = "Histogram of estimated tillage improvements USA",
+     xlab = "Estimated percent yield change")
+
+
+```

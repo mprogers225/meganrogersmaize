@@ -1,0 +1,178 @@
+---
+title: "Precipitation Impact"
+author: "Megan Patricia Rogers"
+date: "6/16/2022"
+output: html_document
+---
+
+R squared value code source: [LINK] https://www.youtube.com/watch?v=Wi1Gok1y0eU
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Package loading:
+``` {r, warning=FALSE, message=FALSE}
+library(tidyverse)  # suite of packages for data manipulation/visualization
+library(Hmisc)  # more data analysis
+library(dplyr)  # data frame manipulation
+library(skimr)  # for creating summaries
+library(magrittr)  # enable piping
+```
+
+#### Load data:
+``` {r}
+# processed_projected_impact data frame generated from Data_Processing_and_Wrangling.Rmd
+
+processed_projected_impact <- read.csv("processed_projected_impacts.csv", 
+                                           header = TRUE, sep = ",", dec = ".")
+```
+
+#### Massing and processing data relevant to precipitation:
+```{r}
+
+# add an additional variable calculating percent precipitation change.
+processed_projected_impact <- processed_projected_impact %>%
+  dplyr::mutate(percent_precipitation_change = 
+                                        local_precipitation_change_since_2005 /
+                                        current_annual_precipitation)
+
+# generate data frames split by country to allow for R^2 analysis
+USA_projected_impact <- processed_projected_impact %>%
+  filter(country=="United States")
+
+canada_projected_impact <- processed_projected_impact %>%
+  filter(country=="Canada")
+```
+
+#### Generating scatter plots for precipitation
+##### Relationship between **TOTAL** precipitation change and yield change  
+```{r}
+
+# TOTAL Precipitation Change COMBINED COUNTRIES
+
+# generating R^2 value for combined data:
+precip_total_combined <- data.frame(
+  processed_projected_impact$local_precipitation_change_since_2005,
+  processed_projected_impact$climate_yield_change_from_2005)
+
+lmod_combined_total=lm(processed_projected_impact$local_precipitation_change_since_2005
+        ~processed_projected_impact$climate_yield_change_from_2005,
+        precip_total_combined)
+
+summary(lmod_combined_total)  # produces R squared value of R^2 = 0.002628
+
+# generating scatter plot for combined data:
+processed_projected_impact %>%
+  filter(time_slice != "EC") %>%
+  ggplot(data=., mapping=aes(x=local_precipitation_change_since_2005,
+                             y=climate_yield_change_from_2005, 
+                             color=country)) +
+  geom_point() +
+  geom_smooth(method=lm, color="blue") +
+  labs(title="Relationship Between Total Precipitation Change and Yield Change", 
+       x="Total Precipitation Change Since 2005 (mm)", 
+       y="Projected Yield Change from 2005 (%)")
+
+
+
+# TOTAL Precipitation Change BY COUNTRY
+
+# generating R^2 value for USA data:
+precip_total_USA <- data.frame(
+  USA_projected_impact$local_precipitation_change_since_2005,
+  USA_projected_impact$climate_yield_change_from_2005)
+
+lmod_USA_total=lm(USA_projected_impact$local_precipitation_change_since_2005
+        ~USA_projected_impact$climate_yield_change_from_2005,
+        precip_total_USA)
+
+summary(lmod_USA_total)  # produces R squared value of R^2 = 0.003277
+
+# generating R^2 value for Canada data:
+precip_total_canada <- data.frame(
+  canada_projected_impact$local_precipitation_change_since_2005,
+  canada_projected_impact$climate_yield_change_from_2005)
+
+lmod_canada_total=lm(canada_projected_impact$local_precipitation_change_since_2005
+        ~canada_projected_impact$climate_yield_change_from_2005,
+        precip_total_canada)
+
+summary(lmod_canada_total)  # multiple R^2 = 0.02767
+
+
+# generate plots for individual countries:
+processed_projected_impact %>%
+  filter(time_slice != "EC") %>%
+  ggplot(data=., mapping=aes(x=local_precipitation_change_since_2005,
+                             y=climate_yield_change_from_2005)) +
+  facet_wrap(~ country) +
+  geom_point() +
+  geom_smooth(method=lm, color="blue") +
+  labs(title="Relationship Between Total Precipitation Change and Yield Change", 
+       x="Total Precipitation Change Since 2005 (mm)", 
+       y="Projected Yield Change from 2005 (%)")
+
+```
+
+##### Relationship between **PERCENT** precipitation change and yield change  
+```{r}
+
+# PERCENT Precipitation Change COMBINED COUNTRIES
+
+# generating R^2 value for combined countries:
+lmod_combined_percent=lm(processed_projected_impact$percent_precipitation_change
+        ~processed_projected_impact$climate_yield_change_from_2005,
+        precip_total_combined)
+
+summary(lmod_combined_percent)  # produces R squared value of R^2 = 0.02579
+
+# generating scatter plot for combined countries:
+processed_projected_impact %>%
+  filter(time_slice != "EC") %>%
+  ggplot(data=., mapping=aes(x=percent_precipitation_change,
+                             y=climate_yield_change_from_2005,
+                             color=country)) +
+  geom_point() +
+  geom_smooth(method=lm, color="blue") +
+  labs(title=" Relationship Between Percent Precipitation Change and Yield Change", 
+       x="Percent Precipitation Change Since 2005 (%)", 
+       y="Projected Yield Change from 2005 (%)")
+
+# PERCENT Precipitation Change BY COUNTRY
+
+# generating R^2 value for USA data:
+precip_total_USA <- data.frame(
+  USA_projected_impact$percent_precipitation_change,
+  USA_projected_impact$climate_yield_change_from_2005)
+
+lmod_USA_percent=lm(USA_projected_impact$percent_precipitation_change
+        ~USA_projected_impact$climate_yield_change_from_2005,
+        precip_total_USA)
+
+summary(lmod_USA_percent)  # multiple R^2 = 0.003567
+
+# generating R^2 value for Canada data:
+precip_total_canada <- data.frame(
+  canada_projected_impact$percent_precipitation_change,
+  canada_projected_impact$climate_yield_change_from_2005)
+
+lmod_canada_percent=lm(canada_projected_impact$percent_precipitation_change
+        ~canada_projected_impact$climate_yield_change_from_2005,
+        precip_total_canada)
+
+summary(lmod_canada_percent)  # multiple R^2 = 0.0453
+
+# generating scatter plot for individual countries:
+processed_projected_impact %>%
+  filter(time_slice != "EC") %>%
+  ggplot(data=., mapping=aes(x=percent_precipitation_change,
+                             y=climate_yield_change_from_2005)) +
+  facet_wrap(~ country) +
+  geom_point() +
+  geom_smooth(method=lm, color="blue") +
+  labs(title=" Relationship Between Percent Precipitation Change and Yield Change", 
+       x="Percent Precipitation Change Since 2005 (mm)", 
+       y="Projected Yield Change from 2005 (%)")
+
+```

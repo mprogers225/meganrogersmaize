@@ -1,0 +1,155 @@
+---
+title: "Data Processing and Wrangling"
+author: "Megan Patricia Rogers"
+date: "6/15/2022"
+output: html_document
+---
+
+### Description
+This Markdown file documents the processing of two datasheets to filter for and 
+rename relevant variables to construct more managable dataframes for subsequent analysis. This paper uses data, provided by Hasegawa et al., that is split between two 
+data sets as described below:
+
+##### 1. Projected Impacts
+includes data on climate and yield projections for multiple climate change 
+scenarios on 6 continents
+
+##### 2. Adaptation Potential
+calculated differences in yield projections between adapation/no adaptation 
+scenarios between scenarios in the same study. directly used data from
+Projected Impacts
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Package loading:
+``` {r, warning=FALSE, message=FALSE}
+library(tidyverse)  # suite of packages for data manipulation/visualization
+library(Hmisc)  # more data analysis
+library(dplyr)  # data frame manipulation
+library(skimr)  # for creating summaries
+library(magrittr)  # enable piping
+```
+
+#### Load data from set working directory:
+documentation source: 
+[Link] (https://stat.ethz.ch/R-manual/R-devel/library/utils/html/read.table.html)
+```{r}
+
+# read CSV files into data frames:
+
+projected_impacts <- read.csv("2022_06_Projected_Impacts_Big_Data.csv", 
+                                 header = TRUE, sep = ",", dec = ".")
+
+adaptation_potential <- read.csv("2022_06_Adaptation_Potential_Big_Data.csv", 
+                                 header = TRUE, sep = ",", dec = ".")
+```
+
+#### Data processing for projected_impacts -> processed_projected_impacts dataframe
+The table below summarizes the variables included in the processed data set. The included script details the process of selecting and renaming variables for ease of analysis. 
+
+```{r, include=TRUE}
+
+# read projected_impacts metadata file into data frame
+projected_impacts_variable_metadata <- 
+  read.csv("2022_06_projected_impacts_variable_metadata.csv", 
+                                 header = TRUE, sep = ",", dec = ".")
+# create table from data frame
+dplyr::glimpse(projected_impacts_variable_metadata) %>%
+  knitr::kable()  # just to show the variables included.
+
+# how do you just include the nice table and not the janky one? 
+
+```
+
+
+```{r, include=TRUE}
+processed_projected_impacts <- projected_impacts %>%
+  dplyr::select("ID", 
+                crop = "Crop", 
+                country = "Country", 
+                sublocation = "Site.location.", 
+                continent = "Region", 
+                current_avg_temp = 
+                  "Current.Average.Temperature_point_coordinate..dC.",
+                current_annual_precipitation = 
+                  "Current.Annual.Precipitation...mm.._point_coordinate",
+                mid_point_year = "Future_Mid.point", 
+                time_slice = "Time.slice", 
+                climate_scenario = "Climate.scenario",
+                local_temp_change_since_2005 = "Local.delta.T.from.2005", 
+                local_precipitation_change_since_2005 = 
+                  "Annual.Precipitation.change..from.2005..mm.",
+                global_temp_chance_since_2005 = "Global.delta.T.from.2005", 
+                projected_yield = "Projected.yield..t.ha.",
+                climate_yield_change_from_2005 = "Climate.impacts.relative.to.2005",
+                yield_change_per_C = "Climate.impacts.per.dC....",
+                yield_change_per_decade = "Climate.impacts.per.decade....",
+                ) %>%
+  dplyr::filter(crop == "Maize") %>%  # interested in corn
+  dplyr::filter(climate_scenario == "RCP4.5") %>%  # filter for RCP4.5-based predictions
+  dplyr::filter(continent == "North America")  # focus on North America
+```
+
+
+#### Data processing for adaptation_potential -> processed_adaptation_potential dataframe
+The table below summarizes the variables included in the processed data set. The included script details the process of selecting and renaming variables for ease of analysis. 
+
+```{r, include=TRUE}
+# read projected_impacts metadata file into data frame
+adaptation_potential_variable_metadata <- 
+  read.csv("2022_06_adaptation_potential_variable_metadata.csv", 
+                                 header = TRUE, sep = ",", dec = ".")
+ # create table from data frame
+dplyr::glimpse(adaptation_potential_variable_metadata) %>% 
+  knitr::kable()  # just to show the variables included.
+
+```
+
+
+```{r, include=TRUE}
+processed_adaptation_potential <- adaptation_potential %>%
+  dplyr::select("ID", 
+                crop = "Crop", 
+                country = "Country", 
+                sublocation = "Site.location.", 
+                continent = "Region", 
+                mid_point_year = "Future_Mid.point", 
+                time_slice = "Time.slice", 
+                climate_scenario = "Climate.scenario",
+                scale = "Scale",
+                crop = "Crop",
+                sublocation = "Site.location.",
+                continent = "Region",
+                adaptation_type = "Adaptation.type",
+                soil_organic_matter = "Soil.organic.matter.management",
+                tillage = "Tillage",
+                cultivar = "Cultivar",
+                adaptation_potential_actual = "Adaptation.potential_actual.yield",
+                adaptation_potential_percentage = "Adaptation.potential_..."
+                ) %>%
+  dplyr::filter(crop == "Maize") %>%  # interested in corn
+  dplyr::filter(climate_scenario == "RCP4.5") %>%  # filter for RCP4.5-based predictions
+  dplyr::filter(continent == "North America")  # focus on North America
+```
+
+#### Export the two dataframes to working directory folder
+``` {r}
+write.csv(processed_projected_impacts,
+          "/Users/meganrogers/Desktop/Plutorial/Final_Project_Directory/processed_projected_impacts.csv", 
+          row.names = FALSE)
+
+write.csv(processed_adaptation_potential,
+          "/Users/meganrogers/Desktop/Plutorial/Final_Project_Directory/processed_adaptation_potential.csv", 
+          row.names = FALSE)
+```
+
+
+
+
+
+
+
+

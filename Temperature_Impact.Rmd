@@ -1,0 +1,179 @@
+---
+title: "Temperature Impact"
+author: "Megan Patricia Rogers"
+date: "6/16/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Package loading:
+``` {r, warning=FALSE, message=FALSE}
+library(tidyverse)  # suite of packages for data manipulation/visualization
+library(Hmisc)  # more data analysis
+library(dplyr)  # data frame manipulation
+library(skimr)  # for creating summaries
+library(magrittr)  # enable piping
+```
+
+#### Load data:
+``` {r}
+# processed_projected_impact data frame generated from Data_Processing_and_Wrangling.Rmd
+
+processed_projected_impact <- read.csv("processed_projected_impacts.csv", 
+                                           header = TRUE, sep = ",", dec = ".")
+```
+
+#### Massing and processing data relevant to temperature:
+```{r}
+# temperature was converted to Kelvin to enable calculation of percent temperature change
+# K = ˚C + 273.15
+
+processed_projected_impact <- processed_projected_impact %>%
+  
+  # adding an additional variable with temperature in K:
+  dplyr::mutate(current_avg_temp_K = current_avg_temp + 273.15) %>%  # convert C to K
+  
+  # add additional variable of calculated percent precipitation change
+  dplyr::mutate(percent_temperature_change = 
+                  local_temp_change_since_2005 / current_avg_temp_K) # 
+
+
+# generate data frames split by country to allow for R^2 analysis
+USA_projected_impact <- processed_projected_impact %>%
+  filter(country=="United States")
+
+canada_projected_impact <- processed_projected_impact %>%
+  filter(country=="Canada")
+```
+
+#### Generating scatter plots for temperature
+##### Relationship between **TOTAL** temperature change and yield change due to climate
+```{r}
+# TOTAL Precipitation Change ACROSS COUNTRIES
+
+# generating R^2 value for combined data:
+temp_total_combined <- data.frame(
+  processed_projected_impact$local_temp_change_since_2005,
+  processed_projected_impact$climate_yield_change_from_2005)
+
+lmod_combined_total=lm(processed_projected_impact$local_temp_change_since_2005
+        ~processed_projected_impact$climate_yield_change_from_2005,
+        temp_total_combined)
+
+summary(lmod_combined_total)  # produces R squared value of R^2 = 0.002795
+
+# generating scatter plot for combined data:
+processed_projected_impact %>%
+  filter(time_slice != "EC") %>%
+  ggplot(data=., mapping=aes(x=local_temp_change_since_2005,
+                             y=climate_yield_change_from_2005)) +
+  geom_point() +
+  geom_smooth(method=lm, color="red") +
+  labs(title="Relationship Between Total Temperature Change and Yield Change", 
+       x="Total Temperature Change Since 2005 (˚C)", 
+       y="Projected Yield Change due to Climate from 2005 (%)")
+
+# TOTAL Precipitation Change BY COUNTRY
+# generating R^2 value for USA data:
+temp_total_USA <- data.frame(
+  USA_projected_impact$local_temp_change_since_2005,
+  USA_projected_impact$climate_yield_change_from_2005)
+
+lmod_USA_total=lm(USA_projected_impact$local_temp_change_since_2005
+        ~USA_projected_impact$climate_yield_change_from_2005,
+        temp_total_USA)
+
+summary(lmod_USA_total)  # produces R squared value of R^2 = 0.001485
+
+# generating R^2 value for Canada data:
+temp_total_canada <- data.frame(
+  canada_projected_impact$local_temp_change_since_2005,
+  canada_projected_impact$climate_yield_change_from_2005)
+
+lmod_canada_total=lm(canada_projected_impact$local_temp_change_since_2005
+        ~canada_projected_impact$climate_yield_change_from_2005,
+        temp_total_canada)
+
+summary(lmod_canada_total)  # produces R squared value of R^2 = 0.07198
+
+# generate plots for individual countries:
+processed_projected_impact %>%
+  filter(time_slice != "EC") %>%
+  ggplot(data=., mapping=aes(x=local_temp_change_since_2005,
+                             y=climate_yield_change_from_2005)) +
+  geom_point() +
+  facet_wrap(~country) +
+  geom_smooth(method=lm, color="red") +
+  labs(title="Relationship Between Total Temperature Change and Yield Change", 
+       x="Total Temperature Change Since 2005 (˚C)", 
+       y="Projected Yield Change due to Climate from 2005 (%)")
+```
+
+##### Relationship between **PERCENT** temperature change and yield change due to climate
+
+``` {r}
+# PERCENT Precipitation Change ACROSS COUNTRIES
+
+# generating R^2 value for combined data:
+temp_percent_combined <- data.frame(
+  processed_projected_impact$percent_temperature_change,
+  processed_projected_impact$climate_yield_change_from_2005)
+
+lmod_combined_percent=lm(processed_projected_impact$percent_temperature_change
+        ~processed_projected_impact$climate_yield_change_from_2005,
+        temp_percent_combined)
+
+summary(lmod_combined_percent)  # produces R squared value of R^2 = 0.001112
+
+# generating scatter plot for combined countries:
+processed_projected_impact %>%
+  filter(time_slice != "EC") %>%
+  ggplot(data=., mapping=aes(x=percent_temperature_change,
+                             y=climate_yield_change_from_2005)) +
+  geom_point() +
+  geom_smooth(method=lm, color="red") +
+  labs(title="Relationship Between Percent Temperature Change and Yield Change", 
+       x="Percent Change in Temperature since 2005 (%)", 
+       y="Projected Yield Change due to Climate from 2005 (%)")
+
+# PERCENT Precipitation Change BY COUNTRY
+# generating R^2 value for USA data:
+temp_percent_USA <- data.frame(
+  USA_projected_impact$percent_temperature_change,
+  USA_projected_impact$climate_yield_change_from_2005)
+
+lmod_USA_percent=lm(USA_projected_impact$percent_temperature_change
+        ~USA_projected_impact$climate_yield_change_from_2005,
+        temp_percent_USA)
+
+summary(lmod_USA_percent)  # produces R squared value of R^2 = 0.001292
+
+# generating R^2 value for Canada data:
+temp_percent_canada <- data.frame(
+  canada_projected_impact$percent_temperature_change,
+  canada_projected_impact$climate_yield_change_from_2005)
+
+lmod_canada_percent=lm(canada_projected_impact$percent_temperature_change
+        ~canada_projected_impact$climate_yield_change_from_2005,
+        temp_percent_canada)
+
+summary(lmod_canada_percent)  # produces R squared value of R^2 = 0.05547
+
+# generating scatter plot for combined data:
+processed_projected_impact %>%
+  filter(time_slice != "EC") %>%
+  ggplot(data=., mapping=aes(x=percent_temperature_change,
+                             y=climate_yield_change_from_2005)) +
+  geom_point() +
+  facet_wrap(~ country) +
+  geom_smooth(method=lm, color="red") +
+  labs(title="Relationship Between Percent Temperature Change and Yield Change", 
+       x="Percent Change in Temperature since 2005 (%)", 
+       y="Projected Yield Change due to Climate from 2005 (%)")
+
+```
+
+
